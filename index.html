@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html manifest="cache.manifest">
+<head>
+  <title>Zefy Timer</title>
+  <meta charset="utf-8">
+  <meta name = "viewport" content = "width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <style type="text/css">
+    body 
+    {
+      background-color:#252525;
+    }
+    
+    #container
+    {
+      width: 480px;
+      height: 320px;
+      margin: 0px auto;
+    }
+    
+    .timer_box
+    {
+      position:absolute; 
+      top: 65px;
+      margin: 0px auto;
+      width: 480px;
+    }
+    
+    .button_box
+    {
+      position:absolute;
+      top: 205px;
+      width: 480px;
+    }
+
+    p#time 
+    {
+      font-size: 80pt;
+      font-family: Arial;
+      text-align: center;
+      color:#ffffff;
+      margin:0px 0px 0px 0px;
+    }
+    
+    img.start 
+    {
+      position: relative;
+      left: 80px;
+      top: 0px;
+    }
+    
+    img.reset 
+    {
+      position: relative;
+      left: 240px;
+      top: 0px;
+    }
+  </style>
+  <script type="text/javascript">
+  
+    timer = null;
+
+    function get_time() 
+    {
+      var now = new Date;
+      return now.getTime();
+    }
+
+    function show() 
+    {
+      var t = timer ? get_time() - base : total;
+      var s = Math.round(t/1000);
+      var m = Math.floor(s/60);
+      s = s%60;
+      if (s < 10) s = "0"+s;
+      m = m%60;
+      if (m < 10) m = "0"+m;
+      
+      if (s == 10)
+      {
+        mySrcMp3.src = '50seconds.mp3';
+        mySrcOgg.src = '50seconds.ogg';
+        myAudio.load();
+        myAudio.play();
+      }
+      if (s == 20)
+      {
+        mySrcMp3.src = '40seconds.mp3';
+        mySrcOgg.src = '40seconds.ogg';
+        myAudio.load();
+        myAudio.play();
+      }
+      if (s == 30)
+      {
+        mySrcMp3.src = '30seconds.mp3';
+        mySrcOgg.src = '30seconds.ogg';
+        myAudio.load();
+        myAudio.play();
+      }
+      if (s == 40)
+      {
+        mySrcMp3.src = '20seconds.mp3';
+        mySrcOgg.src = '20seconds.ogg';
+        myAudio.load();
+        myAudio.play();
+      }
+      if (s == 50)
+      {
+        mySrcMp3.src = '10seconds.mp3';
+        mySrcOgg.src = '10seconds.ogg';
+        myAudio.load();
+        myAudio.play();
+      }
+      
+      p.innerHTML = m+":"+s;
+    }
+
+    function update() 
+    {
+      show();
+      dt = 1000 - (get_time()-base)%1000;
+      timer = setTimeout(update, dt);
+    }
+
+    function start() {
+      base = get_time() - total;
+      mySrcMp3.src = 'start.mp3';
+      mySrcOgg.src = 'start.ogg';
+      myAudio.load();
+      myAudio.play();
+      update();
+    }
+
+    function stop() 
+    {
+      clearTimeout(timer);
+      timer = null;
+      total = get_time() - base;
+    }
+    
+    function reset()
+    {
+      total = 0.0;
+      show();
+    }
+    
+    function mouse_reset(e)
+    {
+      stop();
+      reset();
+      start_button.src = 'play_s.png';
+    }
+
+    function mouse_start(e) 
+    {
+      if (timer) 
+      {
+        start_button.src = 'play_s.png';
+        stop();
+      }
+      else
+      {
+        start_button.src = 'stop_s.png';
+        start();
+      }
+    }
+
+    function main() 
+    {
+      /* timer */
+      p = document.getElementById("time");
+      
+      /* buttons */
+      start_button = document.getElementById("start");
+      restart_button = document.getElementById("reset");
+      
+      /* sounds */
+      myAudio = document.getElementById("teh_audio");
+      mySrcMp3 = document.getElementById('src_mp3');
+      mySrcOgg = document.getElementById('src_ogg');
+      
+      total = 0.0;
+      show();
+      start_button.onmousedown = mouse_start;
+      restart_button.onmousedown = mouse_reset;
+    }
+  </script>
+</head>
+<body onload="main()">
+  <audio id="teh_audio" preload="auto" autobuffer>
+    <source id="src_mp3" src="start.mp3" type="audio/mpeg" />
+    <source id="src_ogg" src="start.ogg" type="audio/ogg" />
+  </audio>
+  <div id="container">
+    <div class="timer_box">
+      <p id="time">loading &hellip;</p>
+    </div>
+    <div class="button_box">
+      <img id="start" class="start" src="play_s.png" />
+      <img id="reset" class="reset" src="reset_s.png" />
+    </div>
+  </div>
+</body>
+</html>
